@@ -27,6 +27,15 @@ class Router
     }
 
     /**
+     * @param $path
+     * @param $callback
+     */
+    public function post($path, $callback)
+    {
+        $this->routes['post'][$path] = $callback;
+    }
+
+    /**
      * @return array|false|mixed|string|string[]
      */
     public function resolve()
@@ -37,7 +46,7 @@ class Router
         if($callback == false)
         {
             $this->response->setStatusCode(404);
-            echo "Not found";
+            return $this->renderView('_404');
         }
         if(is_string($callback))
         {
@@ -50,10 +59,21 @@ class Router
      * @param $view
      * @return array|false|string|string[]
      */
-    public function renderView($view)
+    public function renderView($view, $params = [])
     {
         $layoutContent = $this->layoutContent();
-        $viewContent = $this->renderOnlyView($view);
+        $viewContent = $this->renderOnlyView($view, $params);
+
+        return str_replace('{{content}}', $viewContent, $layoutContent);
+    }
+
+    /**
+     * @param $viewContent
+     * @return array|false|string|string[]
+     */
+    public function renderContent($viewContent)
+    {
+        $layoutContent = $this->layoutContent();
 
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }
@@ -72,8 +92,12 @@ class Router
      * @param $view
      * @return false|string
      */
-    protected function renderOnlyView($view)
+    protected function renderOnlyView($view, $params = [])
     {
+        foreach($params as $key => $value)
+        {
+            $$key = $value;
+        }
         ob_start();
         include_once Application::$ROOT_DIR."/views/$view.php";
         return ob_get_clean();
