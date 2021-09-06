@@ -1,0 +1,15 @@
+{
+    "name": "askaaqib/mvc-framework-php",
+    "authors": [
+        {
+            "name": "Aqib",
+            "email": "askaaqib@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "app\\": "./"
+        }
+    },
+    "require": {}
+}
